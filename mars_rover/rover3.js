@@ -151,7 +151,7 @@ function isObstacle (rover, command) {
   }
   else {
     rover.position = currentPos;
-    console.log("Next command '" + command + "' leads to an obstacle, please change root and rerun" )
+    console.log("Next command '" + command + "' leads to an obstacle, please change route and rerun." )
     return;
   }
 }

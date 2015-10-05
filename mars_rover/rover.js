@@ -1,8 +1,14 @@
 var myRover = {
+  name :"RoverA",
   position: [0,0], 
   direction: 'N'
 };
 
+var otherRover = {
+  name : "RoverB",
+  position: [9,9],
+  direction: 'N'
+};
 
 var grid = [[[9,0],[9,1],[9,2],[9,3],[9,4],[9,5],[9,6],[9,7],[9,8],[9,9]],
             [[8,0],[8,1],["O"],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8],[8,9]],
@@ -139,39 +145,46 @@ function sendOneCommand (rover, command) {
   return rover.position;
 }
 
-function isObstacle (rover, command) {
+
+function isRoverOrObstacle (rover, rover1, command) {
   var currentPos = [];
   currentPos.push(rover.position[0]);
   currentPos.push(rover.position[1]);
   sendOneCommand(rover, command);
-  if (isOnMap(rover) === true) {
+  if (isOnMap(rover) === true && (rover.position[0] != rover1.position[0] || rover.position[1] != rover1.position[1])) {
     currentPos = [];
     currentPos.push(rover.position[0]);
     currentPos.push(rover.position[1]);
   }
   else {
     rover.position = currentPos;
-    console.log("Next command '" + command + "' leads to an obstacle, please change root and rerun" )
-    return;
+    console.log("Next command '" + command + "' leads " + rover.name + " to bump into an obstacle or another rover, please change route and rerun." )
+    return false;
   }
 }
 
-function sendCommands (rover, commands) {
+function sendCommands (rover, rover1, commands) {
   var commandsArr = commands.split("");
   for (var i = 0; i < commandsArr.length; i++) {
-    isObstacle(rover, commandsArr[i]);
+    if (isRoverOrObstacle(rover, rover1, commandsArr[i]) === false) {
+      break;
+    }
   }
   return logPos(rover);
 }
 
 function logPos(rover) {
-  console.log("New Rover Position: [" + rover.position[0] + ", " + rover.position[1] + "]");
+  console.log("New " + rover.name +" Position: [" + rover.position[0] + ", " + rover.position[1] + "]");
 }
 
+sendCommands(myRover, otherRover, "b");
+sendCommands(myRover, otherRover, "ffffrff");
+sendCommands(myRover, otherRover, "ffffffff");
+sendCommands(myRover, otherRover, "rffff");
+sendCommands(myRover, otherRover, "lbbbb");
+sendCommands(myRover, otherRover, "lfff");
+sendCommands(otherRover, myRover, "rfrff");
+sendCommands(otherRover, myRover, "rfff");
 
-// these commands should bring us to postion [9,9], after facing some obstacles
-sendCommands(myRover, "ffffffff");
-sendCommands(myRover, "rffff");
-sendCommands(myRover, "lbbbb");
-sendCommands(myRover, "lfff");
+
 
